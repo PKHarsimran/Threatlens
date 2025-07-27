@@ -2,19 +2,17 @@ import os
 import re
 import argparse
 import requests
+import pandas as pd
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse
+from datetime import datetime
 
 IOC_PATTERN = re.compile(r"(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(?:[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})")
 
-# List of threat feeds you can use (add more as needed)
-THREAT_FEEDS = [
-    "https://rules.emergingthreats.net/open/suricata/rules/emerging-drop.rules",
-    "https://www.abuse.ch/feeds/malwarebazaar/tags/emotet/",
-    "https://urlhaus.abuse.ch/downloads/text/",
-    "https://feodotracker.abuse.ch/downloads/ipblocklist_recommended.txt",
-    "https://cinsscore.com/list/ci-badguys.txt",
-    "https://reputation.alienvault.com/reputation.data"
+DEFAULT_FEEDS = [
+    "https://rules.emergingthreats.net/open/suricata/rules/emerging-ciarmy.rules",
+    "https://www.abuseipdb.com/statistics",
+    "https://feodotracker.abuse.ch/blocklist/",
+    "https://threatfox.abuse.ch/export/host/",
 ]
 
 def determine_type(indicator: str) -> str:
@@ -27,74 +25,62 @@ def determine_type(indicator: str) -> str:
     return "other"
 
 def fetch_feed(url: str) -> str:
-    try:
-        resp = requests.get(url, timeout=15)
-        resp.raise_for_status()
-        return resp.text
-    except Exception as e:
-        print(f"❌ Failed to fetch {url}: {e}")
-        return ""
+    resp = requests.get(url, timeout=15)
+    resp.raise_for_status()
+    return resp.text
 
-def parse_indicators_from_html(html: str, source_url: str, limit: int):
+def parse_indicators(html: str, source_url: str, limit: int):
     soup = BeautifulSoup(html, "html.parser")
     text = soup.get_text(separator="\n")
-    return parse_indicators_from_text(text, source_url, limit)
-
-def parse_indicators_from_text(text: str, source_url: str, limit: int):
-    candidates = list(set([ioc.strip() for ioc in IOC_PATTERN.findall(text)]))
+    candidates = IOC_PATTERN.findall(text)
     indicators = []
+    seen = set()
     for ind in candidates:
+        if ind in seen:
+            continue
+        seen.add(ind)
         indicators.append({
             "indicator": ind,
             "type": determine_type(ind),
-            "threat_type": "other",
             "confidence": "medium",
-            "source_name": urlparse(source_url).hostname or "unknown",
             "source_url": source_url,
-            "source_type": "threat_feed",
+            "timestamp": datetime.utcnow().isoformat(),
         })
         if len(indicators) >= limit:
             break
     return indicators
 
-def post_iocs(iocs, api_base):
-    endpoint = api_base.rstrip("/") + "/iocs"
-    for ioc in iocs:
-        try:
-            resp = requests.post(endpoint, json=ioc, timeout=10)
-            resp.raise_for_status()
-            print(f"✅ Uploaded {ioc['indicator']} ({ioc['type']})")
-        except Exception as exc:
-            print(f"❌ Failed to upload {ioc['indicator']}: {exc}")
+def save_iocs(iocs, output_file):
+    df = pd.DataFrame(iocs)
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    df.to_csv(output_file, index=False)
+    print(f"✅ Saved {len(iocs)} IOCs to {output_file}")
 
 def main():
-    parser = argparse.ArgumentParser(description="Scrape IOC feed and upload to API")
-    parser.add_argument("--feed-url", help="URL of the threat feed")
-    parser.add_argument("--limit", type=int, default=50, help="Maximum number of IOCs to process")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--feed-url", help="Single feed URL")
+    parser.add_argument("--limit", type=int, default=50)
+    parser.add_argument("--out", default="assets/threat-intel/threat-feed.csv", help="Output file path")
     args = parser.parse_args()
 
-    api_base = os.environ.get("API_BASE_URL")
-    if not api_base:
-        raise SystemExit("❌ API_BASE_URL environment variable not set")
+    iocs = []
+    if args.feed_url:
+        html = fetch_feed(args.feed_url)
+        iocs = parse_indicators(html, args.feed_url, args.limit)
+    else:
+        for feed in DEFAULT_FEEDS:
+            print(f"🌐 Fetching from {feed}")
+            try:
+                html = fetch_feed(feed)
+                iocs += parse_indicators(html, feed, args.limit)
+            except Exception as e:
+                print(f"❌ Failed to fetch from {feed}: {e}")
+    
+    if not iocs:
+        print("⚠️ No IOCs found")
+        return
 
-    feed_urls = [args.feed_url] if args.feed_url else THREAT_FEEDS
-
-    for url in feed_urls:
-        print(f"\n🌐 Fetching from: {url}")
-        raw_data = fetch_feed(url)
-        if not raw_data:
-            continue
-
-        if "<html" in raw_data.lower():
-            iocs = parse_indicators_from_html(raw_data, url, args.limit)
-        else:
-            iocs = parse_indicators_from_text(raw_data, url, args.limit)
-
-        if not iocs:
-            print("⚠️  No indicators found.")
-            continue
-
-        post_iocs(iocs, api_base)
+    save_iocs(iocs, args.out)
 
 if __name__ == "__main__":
     main()
