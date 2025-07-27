@@ -1,0 +1,30 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.env
+.env.*.local
+*.local
+
+# Editor settings
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# System files
+Thumbs.db
+
+# Optional: lockfiles (uncomment only if not using lockfiles)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# GitHub Pages cache (if using gh-pages)
+.cache/
+gh-pages/
