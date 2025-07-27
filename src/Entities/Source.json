@@ -1,0 +1,63 @@
+{
+  "name": "Source",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the source"
+    },
+    "url": {
+      "type": "string",
+      "description": "Base URL of the source"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "news_site",
+        "security_blog",
+        "threat_intel",
+        "research_org",
+        "social_media",
+        "forum",
+        "government",
+        "other"
+      ],
+      "description": "Type of source"
+    },
+    "reliability": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "reliable",
+        "questionable",
+        "unknown"
+      ],
+      "default": "unknown",
+      "description": "Reliability rating of the source"
+    },
+    "last_checked": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this source was last checked"
+    },
+    "ioc_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of IOCs found from this source"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the source"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to actively monitor this source"
+    }
+  },
+  "required": [
+    "name",
+    "url",
+    "type"
+  ]
+}

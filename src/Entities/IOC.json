@@ -1,0 +1,116 @@
+{
+  "name": "IOC",
+  "type": "object",
+  "properties": {
+    "indicator": {
+      "type": "string",
+      "description": "The actual IOC (IP, domain, hash, etc.)"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "ip",
+        "domain",
+        "url",
+        "hash_md5",
+        "hash_sha1",
+        "hash_sha256",
+        "email",
+        "file_path",
+        "registry_key",
+        "other"
+      ],
+      "description": "Type of indicator"
+    },
+    "threat_type": {
+      "type": "string",
+      "enum": [
+        "malware",
+        "phishing",
+        "c2",
+        "botnet",
+        "ransomware",
+        "apt",
+        "vulnerability",
+        "data_breach",
+        "other"
+      ],
+      "description": "Category of threat"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Confidence level of the IOC"
+    },
+    "source_name": {
+      "type": "string",
+      "description": "Name of the source (website, blog, report)"
+    },
+    "source_url": {
+      "type": "string",
+      "description": "URL where the IOC was found"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "news_article",
+        "security_blog",
+        "threat_report",
+        "research_paper",
+        "social_media",
+        "forum",
+        "other"
+      ],
+      "description": "Type of source"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description or context about the IOC"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization"
+    },
+    "first_seen": {
+      "type": "string",
+      "format": "date",
+      "description": "When the IOC was first observed"
+    },
+    "last_seen": {
+      "type": "string",
+      "format": "date",
+      "description": "When the IOC was last observed"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the IOC is still considered active"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Severity level"
+    }
+  },
+  "required": [
+    "indicator",
+    "type",
+    "source_name",
+    "source_url"
+  ]
+}
