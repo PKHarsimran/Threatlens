@@ -35,10 +35,11 @@ jobs:
           LIMIT="${{ github.event.inputs.limit || 50 }}"
           python scripts/scrape_iocs.py --limit "$LIMIT" ${FEED_URL:+--feed-url "$FEED_URL"}
       
-      - name: Commit & Push CSV
+      - name: Commit updated threat feed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add assets/threat-intel/threat-feed.csv
+          git add -f assets/threat-intel/threat-feed.csv
           git commit -m "⬆️ Updated threat feed at $(date -u +'%Y-%m-%d %H:%M:%S UTC')" || echo "No changes to commit"
           git push
+
