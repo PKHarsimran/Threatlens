@@ -58,8 +58,18 @@ const IOCTableRow = ({ ioc, onIOCUpdate }) => {
       <TableRow className="cyber-border border-b hover:bg-gray-800/50">
         <TableCell className="font-medium text-gray-100 truncate max-w-xs">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="w-6 h-6" onClick={handleCopy}>
-              {copied ? <Check className="w-4 h-4 text-green-400" /> : <ClipboardCopy className="w-4 h-4 text-gray-400 hover:text-cyan-400" />}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-6 h-6"
+              onClick={handleCopy}
+            >
+              {copied ? (
+                <Check aria-hidden="true" className="w-4 h-4 text-green-400" />
+              ) : (
+                <ClipboardCopy aria-hidden="true" className="w-4 h-4 text-gray-400 hover:text-cyan-400" />
+              )}
+              <span className="sr-only">{copied ? 'Copied' : 'Copy indicator'}</span>
             </Button>
             <span>{ioc.indicator}</span>
           </div>
@@ -71,18 +81,18 @@ const IOCTableRow = ({ ioc, onIOCUpdate }) => {
         <TableCell className="text-gray-300">{format(new Date(ioc.created_date), 'MMM dd, yyyy')}</TableCell>
         <TableCell>
           {ioc.is_active ? (
-            <Badge className="bg-green-500/10 text-green-400 border-green-500/20"><ShieldCheck className="w-3 h-3 mr-1" /> Active</Badge>
+          <Badge className="bg-green-500/10 text-green-400 border-green-500/20"><ShieldCheck aria-hidden="true" className="w-3 h-3 mr-1" /> Active</Badge>
           ) : (
-            <Badge className="bg-gray-500/10 text-gray-400 border-gray-500/20"><ShieldOff className="w-3 h-3 mr-1" /> Inactive</Badge>
+          <Badge className="bg-gray-500/10 text-gray-400 border-gray-500/20"><ShieldOff aria-hidden="true" className="w-3 h-3 mr-1" /> Inactive</Badge>
           )}
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" onClick={() => setEditingIOC(ioc)} className="hover:text-cyan-400">
-              <Pencil className="w-4 h-4" />
+              <Pencil aria-hidden="true" className="w-4 h-4" />
             </Button>
             <Button variant="ghost" size="icon" onClick={handleDelete} disabled={isDeleting} className="hover:text-red-500">
-              <Trash2 className="w-4 h-4" />
+              <Trash2 aria-hidden="true" className="w-4 h-4" />
             </Button>
           </div>
         </TableCell>
@@ -113,7 +123,7 @@ export default function IOCTable({ iocs, isLoading, onIOCUpdate }) {
   if (iocs.length === 0) {
     return (
       <div className="text-center py-16 cyber-card rounded-lg">
-        <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-amber-500" />
+        <AlertTriangle aria-hidden="true" className="w-12 h-12 mx-auto mb-4 text-amber-500" />
         <h3 className="text-xl font-semibold text-gray-100">No IOCs Found</h3>
         <p className="text-gray-400 mt-2">Try adjusting your filters or adding new IOCs.</p>
       </div>

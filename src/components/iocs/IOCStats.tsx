@@ -9,7 +9,7 @@ const StatCard = ({ title, value, icon: Icon, color }) => (
         <p className="text-sm text-slate-400">{title}</p>
         <p className="text-2xl font-bold text-white">{value}</p>
       </div>
-      <Icon className="w-8 h-8 text-slate-500" />
+      <Icon aria-hidden="true" className="w-8 h-8 text-slate-500" />
     </CardContent>
   </Card>
 );
