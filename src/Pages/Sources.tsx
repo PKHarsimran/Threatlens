@@ -10,9 +10,9 @@ import {
   Shield
 } from "lucide-react";
 
-import SourceTable from "../Components/sources/SourceTable";
+import SourceTable from "../components/sources/SourceTable";
 import AddSourceDialog from "../components/sources/AddSourceDialog";
-import SourceStats from "../Components/sources/SourceStats";
+import SourceStats from "../components/sources/SourceStats";
 
 export default function Sources() {
   const [sources, setSources] = useState([]);
