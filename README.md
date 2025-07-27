@@ -1,41 +1,38 @@
-# ThreatLens Frontend
+# Threatlens
 
-ThreatLens provides a simple web interface for exploring threat intelligence data. The app presents recent IOCs, tracks sources and lets analysts export information. It is built with React, TypeScript and Tailwind using the **Vite** build tool.
+## Scrape IOCs
 
-## Development setup
+This repository includes a simple scraping utility located in `scripts/scrape_iocs.py`.
+The script downloads indicators of compromise (IOCs) from a public feed and uploads
+new entries to a configurable API.
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Start the development server:
-   ```bash
-   npm run dev
-   ```
-   The site will be available at `http://localhost:3000`.
+### Requirements
 
-## Scraping script
+- Python 3.8+
+- `requests` and `beautifulsoup4` packages
 
-A small Node.js script (`scripts/scrape.ts`) gathers IOCs from the configured sources. It downloads each feed and outputs a JSON file consumed by the frontend on page load. Run it whenever you want to refresh the dataset:
+Install dependencies:
 
 ```bash
-npm run scrape
+pip install -r requirements.txt
 ```
 
-The generated file is placed under `public/data` and the pages load it using the entity helpers.
+Create a `.env` file or export `API_BASE_URL` environment variable pointing to your
+API instance. The script posts IOCs to `<API_BASE_URL>/iocs`.
 
-## Building and deployment
+### Usage
 
-Create a production build with:
+Run the scraper with an optional limit and feed URL:
 
 ```bash
-npm run build
+python scripts/scrape_iocs.py --limit 50 --feed-url https://example.com/feed
 ```
 
-This uses Vite to generate static assets in the `dist` directory. The `deploy` script pushes the contents of `dist` to GitHub Pages:
+The script parses indicators from the feed and POSTs them to the API.
 
-```bash
-npm run deploy
-```
+### GitHub Actions
 
-GitHub Pages serves the site from the `gh-pages` branch with the base path configured in `vite.config.js`.
+A workflow in `.github/workflows/scrape-iocs.yml` can execute the scraper
+automatically. It runs daily and may also be triggered manually from the
+Actions tab. The workflow expects an `API_BASE_URL` repository secret. When
+triggering manually you can override the feed URL and indicator limit.
