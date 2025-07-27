@@ -56,33 +56,6 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <SidebarProvider>
-      <style>{`
-        :root {
-          --bg-primary: #111827;
-          --bg-secondary: #1F2937;
-          --border-primary: #374151;
-          --text-primary: #F9FAFB;
-          --text-secondary: #9CA3AF;
-          --accent-blue: #3B82F6;
-          --accent-cyan: #22D3EE;
-          --accent-green: #22C55E;
-        }
-        body {
-          background-color: var(--bg-primary);
-          color: var(--text-secondary);
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-        .cyber-glow {
-          box-shadow: 0 0 15px 0 rgba(34, 211, 238, 0.4);
-        }
-        .cyber-border {
-          border-color: var(--border-primary);
-        }
-        .cyber-card {
-          background-color: var(--bg-secondary);
-          border: 1px solid var(--border-primary);
-        }
-      `}</style>
 
       <div className="min-h-screen flex w-full">
         <Sidebar className="cyber-border border-r bg-gray-900/50 backdrop-blur-sm">
