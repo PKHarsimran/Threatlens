@@ -4,18 +4,19 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/Threatlens/', // 👈 This is the important part for GitHub Pages!
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, "src"),
+      '@': path.resolve(__dirname, 'src'),
     },
   },
   server: {
     port: 3000,
-    open: true
+    open: true,
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
-  }
+    sourcemap: true,
+  },
 })
