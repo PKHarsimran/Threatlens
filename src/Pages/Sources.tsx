@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Source, IOC } from "@/Entities/all";
-import { Button } from "@/Components/ui/button";
-import { Input } from "@/Components/ui/input";
+import { Source, IOC } from "@/entities/all";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Search,
   Plus,
@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 import SourceTable from "../Components/sources/SourceTable";
-import AddSourceDialog from "../Components/sources/AddSourceDialog";
+import AddSourceDialog from "../components/sources/AddSourceDialog";
 import SourceStats from "../Components/sources/SourceStats";
 
 export default function Sources() {
