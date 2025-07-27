@@ -25,13 +25,13 @@ const StatCard = ({ title, value, icon: Icon, color, trend, isLoading }) => (
           )}
           {trend && (
             <p className="text-sm text-green-400 mt-2 flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" />
+              <TrendingUp aria-hidden="true" className="w-3 h-3" />
               {trend}
             </p>
           )}
         </div>
         <div className={`p-3 rounded-xl ${color} bg-opacity-20 cyber-glow`}>
-          <Icon className={`w-6 h-6 ${color.replace('bg-', 'text-')}`} />
+          <Icon aria-hidden="true" className={`w-6 h-6 ${color.replace('bg-', 'text-')}`} />
         </div>
       </div>
     </CardContent>

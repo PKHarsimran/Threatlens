@@ -179,7 +179,7 @@ export default function Export() {
           <Card className="cyber-card">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
-                <Filter className="w-5 h-5" />
+                <Filter aria-hidden="true" className="w-5 h-5" />
                 Export Configuration
               </CardTitle>
             </CardHeader>
@@ -298,7 +298,7 @@ export default function Export() {
           <Card className="cyber-card">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
-                <Database className="w-5 h-5" />
+                <Database aria-hidden="true" className="w-5 h-5" />
                 Include Fields
               </CardTitle>
             </CardHeader>
@@ -348,7 +348,7 @@ export default function Export() {
                 disabled={filteredData.length === 0 || isLoading}
                 className="bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 cyber-glow"
               >
-                <Download className="w-4 h-4 mr-2" />
+                <Download aria-hidden="true" className="w-4 h-4 mr-2" />
                 Export {filteredData.length} Records
               </Button>
             </div>

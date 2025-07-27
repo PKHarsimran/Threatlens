@@ -20,7 +20,7 @@ export default function TopSources({ sources, isLoading }) {
     <Card className="cyber-card">
       <CardHeader>
         <CardTitle className="text-white flex items-center gap-2">
-          <Globe className="w-5 h-5 text-cyan-400" />
+          <Globe aria-hidden="true" className="w-5 h-5 text-cyan-400" />
           Top Sources
         </CardTitle>
       </CardHeader>
@@ -42,7 +42,7 @@ export default function TopSources({ sources, isLoading }) {
           </div>
         ) : topSources.length === 0 ? (
           <div className="text-center py-8 text-slate-400">
-            <Globe className="w-12 h-12 mx-auto mb-3 opacity-50" />
+            <Globe aria-hidden="true" className="w-12 h-12 mx-auto mb-3 opacity-50" />
             <p>No sources found</p>
             <p className="text-sm">Add some sources to get started</p>
           </div>

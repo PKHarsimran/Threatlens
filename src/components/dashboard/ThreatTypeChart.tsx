@@ -55,7 +55,7 @@ export default function ThreatTypeChart({ iocs, isLoading }) {
     <Card className="cyber-card">
       <CardHeader>
         <CardTitle className="text-white flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-cyan-400" />
+          <BarChart3 aria-hidden="true" className="w-5 h-5 text-cyan-400" />
           Threat Types Distribution
         </CardTitle>
       </CardHeader>
@@ -67,7 +67,7 @@ export default function ThreatTypeChart({ iocs, isLoading }) {
         ) : total === 0 ? (
           <div className="h-64 flex items-center justify-center text-slate-400">
             <div className="text-center">
-              <BarChart3 className="w-16 h-16 mx-auto mb-4 opacity-50" />
+              <BarChart3 aria-hidden="true" className="w-16 h-16 mx-auto mb-4 opacity-50" />
               <p>No threat data available</p>
               <p className="text-sm">Add some IOCs to see the distribution</p>
             </div>

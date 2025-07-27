@@ -11,6 +11,14 @@
   --card-foreground: 210 40% 98%;
   --primary: 217.2 91.2% 59.8%;
   --radius: 0.5rem;
+  --bg-primary: #111827;
+  --bg-secondary: #1F2937;
+  --border-primary: #374151;
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --accent-blue: #3B82F6;
+  --accent-cyan: #22D3EE;
+  --accent-green: #22C55E;
 }
 
 * {
@@ -18,9 +26,9 @@
 }
 
 body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
-  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -30,12 +38,12 @@ body {
 }
 
 .cyber-border {
-  border-color: hsl(var(--border));
+  border-color: var(--border-primary);
 }
 
 .cyber-card {
-  background-color: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
 }
 
 

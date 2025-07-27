@@ -1,0 +1,36 @@
+name: Scrape IOCs
+
+on:
+  workflow_dispatch:
+    inputs:
+      feed_url:
+        description: 'Feed URL'
+        required: false
+        default: 'https://example.com/feed'
+      limit:
+        description: 'Number of IOCs to process'
+        required: false
+        default: '50'
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run scraper
+        env:
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          FEED_URL: ${{ github.event.inputs.feed_url }}
+          LIMIT: ${{ github.event.inputs.limit }}
+        run: |
+          feed="${FEED_URL:-https://example.com/feed}"
+          limit="${LIMIT:-50}"
+          python scripts/scrape_iocs.py --feed-url "$feed" --limit "$limit"

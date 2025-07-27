@@ -68,7 +68,7 @@ export default function Sources() {
             onClick={() => setShowAddDialog(true)}
             className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-700 cyber-glow"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus aria-hidden="true" className="w-4 h-4 mr-2" />
             Add Source
           </Button>
         </div>
@@ -78,7 +78,7 @@ export default function Sources() {
 
         {/* Search */}
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+          <Search aria-hidden="true" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
           <Input
             placeholder="Search sources..."
             value={searchTerm}

@@ -81,7 +81,7 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 text-green-400 rounded-lg border border-green-500/20">
-              <Activity className="w-4 h-4" />
+              <Activity aria-hidden="true" className="w-4 h-4" />
               <span className="font-medium">System Online</span>
             </div>
           </div>
