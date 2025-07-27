@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 import { IOC } from "@/entities/all";
-import { Button } from "@/Components/ui/button";
-import { Input } from "@/Components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Search,
   Filter,
@@ -13,10 +13,10 @@ import {
   Globe
 } from "lucide-react";
 
-import IOCTable from "../Components/iocs/IOCTable";
-import IOCFilters from "../Components/iocs/IOCFilters";
+import IOCTable from "../components/iocs/IOCTable";
+import IOCFilters from "../components/iocs/IOCFilters";
 import AddIOCDialog from "../components/iocs/AddIOCDialog";
-import IOCStats from "../Components/iocs/IOCStats";
+import IOCStats from "../components/iocs/IOCStats";
 
 export default function IOCs() {
   const [iocs, setIocs] = useState([]);
