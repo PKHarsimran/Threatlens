@@ -28,3 +28,5 @@ Thumbs.db
 # GitHub Pages cache (if using gh-pages)
 .cache/
 gh-pages/
+# Ignore threat feed unless committed by workflow
+assets/threat-intel/threat-feed.csv
