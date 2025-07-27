@@ -33,7 +33,7 @@ jobs:
         run: |
           FEED_URL="${{ github.event.inputs.feed_url }}"
           LIMIT="${{ github.event.inputs.limit || 50 }}"
-          python scripts/fetch_and_save_iocs.py --limit "$LIMIT" ${FEED_URL:+--feed-url "$FEED_URL"}
+          python scripts/scrape_iocs.py --limit "$LIMIT" ${FEED_URL:+--feed-url "$FEED_URL"}
       
       - name: Commit & Push CSV
         run: |
