@@ -57,7 +57,7 @@ export default function ThreatTimeline({ iocs, isLoading }) {
     <Card className="cyber-card">
       <CardHeader>
         <CardTitle className="text-white flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-cyan-400" />
+          <TrendingUp aria-hidden="true" className="w-5 h-5 text-cyan-400" />
           7-Day Threat Timeline
         </CardTitle>
       </CardHeader>

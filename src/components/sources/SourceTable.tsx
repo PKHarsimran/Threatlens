@@ -46,18 +46,24 @@ const SourceTableRow = ({ source, onSourceUpdate }) => {
         <TableCell className="text-white font-semibold">{source.ioc_count || 0}</TableCell>
         <TableCell>
           {source.is_active ? (
-            <CheckCircle className="w-5 h-5 text-green-400" />
+            <>
+              <CheckCircle aria-hidden="true" className="w-5 h-5 text-green-400" />
+              <span className="sr-only">Active</span>
+            </>
           ) : (
-            <XCircle className="w-5 h-5 text-slate-500" />
+            <>
+              <XCircle aria-hidden="true" className="w-5 h-5 text-slate-500" />
+              <span className="sr-only">Inactive</span>
+            </>
           )}
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" onClick={() => setEditingSource(source)} className="hover:text-cyan-400">
-              <Pencil className="w-4 h-4" />
-            </Button>
+              <Pencil aria-hidden="true" className="w-4 h-4" />
+              </Button>
             <Button variant="ghost" size="icon" onClick={handleDelete} disabled={isDeleting} className="hover:text-red-500">
-              <Trash2 className="w-4 h-4" />
+              <Trash2 aria-hidden="true" className="w-4 h-4" />
             </Button>
           </div>
         </TableCell>

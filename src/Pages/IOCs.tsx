@@ -134,14 +134,14 @@ export default function IOCs() {
               className="cyber-border hover:bg-cyan-500/10 text-cyan-300 border-cyan-500/50"
               disabled={filteredIocs.length === 0}
             >
-              <Download className="w-4 h-4 mr-2" />
+              <Download aria-hidden="true" className="w-4 h-4 mr-2" />
               Export CSV
             </Button>
             <Button
               onClick={() => setShowAddDialog(true)}
               className="bg-cyan-500 hover:bg-cyan-600 text-white cyber-glow"
             >
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus aria-hidden="true" className="w-4 h-4 mr-2" />
               Add IOC
             </Button>
           </div>
@@ -153,7 +153,7 @@ export default function IOCs() {
         {/* Search and Filters */}
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search aria-hidden="true" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
               placeholder="Search IOCs, descriptions, or sources..."
               value={searchTerm}
