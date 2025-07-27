@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { IOC } from "@/entities/all";
+import { IOC } from "@/Entities/all";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import {
