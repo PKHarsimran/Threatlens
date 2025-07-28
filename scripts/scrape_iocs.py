@@ -10,8 +10,10 @@ IOC_PATTERN = re.compile(r"(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(?:[a-zA-Z0-9.-]+\.[a-z
 FEEDS = [
     "https://www.abuseipdb.com/statistics",
     "https://feodotracker.abuse.ch/blocklist/",
-    "https://threatfox.abuse.ch/export/host/",  # This one 404s—keep it for retry later or replace
+    "https://threatfox.abuse.ch/export/host/",
 ]
+
+CSV_PATH = "assets/threat-intel/threat-feed.csv"
 
 
 def determine_type(indicator: str) -> str:
@@ -58,13 +60,32 @@ def parse_indicators(html: str, source_url: str, limit: int):
     return indicators
 
 
-def save_to_csv(iocs, path="assets/threat-intel/threat-feed.csv"):
+def load_existing_indicators(path):
+    existing = set()
+    if os.path.exists(path):
+        with open(path, newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                existing.add(row["indicator"].strip().lower())
+    return existing
+
+
+def append_to_csv(new_iocs, path=CSV_PATH):
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=iocs[0].keys())
-        writer.writeheader()
-        writer.writerows(iocs)
-    print(f"✅ Saved {len(iocs)} IOCs to {path}")
+    file_exists = os.path.exists(path)
+    existing = load_existing_indicators(path)
+
+    deduped_iocs = [ioc for ioc in new_iocs if ioc["indicator"].strip().lower() not in existing]
+    if not deduped_iocs:
+        print("🟡 No new IOCs to add.")
+        return
+
+    with open(path, "a", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=deduped_iocs[0].keys())
+        if not file_exists:
+            writer.writeheader()
+        writer.writerows(deduped_iocs)
+    print(f"✅ Appended {len(deduped_iocs)} new IOCs to {path}")
 
 
 def main(limit=50):
@@ -78,7 +99,7 @@ def main(limit=50):
             print(f"❌ Failed to fetch from {feed_url}: {e}")
 
     if all_iocs:
-        save_to_csv(all_iocs)
+        append_to_csv(all_iocs)
     else:
         print("⚠️ No indicators found.")
 
