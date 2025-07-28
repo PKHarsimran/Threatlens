@@ -1,10 +1,17 @@
 import os
 import re
-import argparse
+import csv
 import requests
+from datetime import datetime, timezone
 from bs4 import BeautifulSoup
 
 IOC_PATTERN = re.compile(r"(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(?:[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})")
+
+FEEDS = [
+    "https://www.abuseipdb.com/statistics",
+    "https://feodotracker.abuse.ch/blocklist/",
+    "https://threatfox.abuse.ch/export/host/",  # This one 404s—keep it for retry later or replace
+]
 
 
 def determine_type(indicator: str) -> str:
@@ -18,6 +25,7 @@ def determine_type(indicator: str) -> str:
 
 
 def fetch_feed(url: str) -> str:
+    print(f"🌐 Fetching from {url}")
     resp = requests.get(url, timeout=10)
     resp.raise_for_status()
     return resp.text
@@ -28,49 +36,52 @@ def parse_indicators(html: str, source_url: str, limit: int):
     text = soup.get_text(separator="\n")
     candidates = IOC_PATTERN.findall(text)
     indicators = []
+    seen = set()
+
     for ind in candidates:
+        ind = ind.strip().lower()
+        if ind in seen:
+            continue
+        seen.add(ind)
         indicators.append({
             "indicator": ind,
             "type": determine_type(ind),
-            "threat_type": "other",
+            "threat_type": "unknown",
             "confidence": "medium",
             "source_name": source_url.split("//")[-1].split("/")[0],
             "source_url": source_url,
-            "source_type": "threat_report",
+            "source_type": "threat_feed",
+            "timestamp": datetime.now(timezone.utc).isoformat()
         })
         if len(indicators) >= limit:
             break
     return indicators
 
 
-def post_iocs(iocs, api_base):
-    endpoint = api_base.rstrip("/") + "/iocs"
-    for ioc in iocs:
+def save_to_csv(iocs, path="assets/threat-intel/threat-feed.csv"):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=iocs[0].keys())
+        writer.writeheader()
+        writer.writerows(iocs)
+    print(f"✅ Saved {len(iocs)} IOCs to {path}")
+
+
+def main(limit=50):
+    all_iocs = []
+    for feed_url in FEEDS:
         try:
-            resp = requests.post(endpoint, json=ioc, timeout=10)
-            resp.raise_for_status()
-            print(f"Uploaded {ioc['indicator']} -> {resp.status_code}")
-        except Exception as exc:
-            print(f"Failed to upload {ioc['indicator']}: {exc}")
+            html = fetch_feed(feed_url)
+            indicators = parse_indicators(html, feed_url, limit)
+            all_iocs.extend(indicators)
+        except Exception as e:
+            print(f"❌ Failed to fetch from {feed_url}: {e}")
 
-
-def main():
-    parser = argparse.ArgumentParser(description="Scrape IOC feed and upload to API")
-    parser.add_argument("--feed-url", default="https://example.com/feed", help="URL of the threat feed")
-    parser.add_argument("--limit", type=int, default=50, help="Maximum number of IOCs to process")
-    args = parser.parse_args()
-
-    api_base = os.environ.get("API_BASE_URL")
-    if not api_base:
-        raise SystemExit("API_BASE_URL environment variable not set")
-
-    html = fetch_feed(args.feed_url)
-    iocs = parse_indicators(html, args.feed_url, args.limit)
-    if not iocs:
-        print("No indicators found")
-        return
-    post_iocs(iocs, api_base)
+    if all_iocs:
+        save_to_csv(all_iocs)
+    else:
+        print("⚠️ No indicators found.")
 
 
 if __name__ == "__main__":
-    main()
+    main(limit=int(os.getenv("LIMIT", 50)))

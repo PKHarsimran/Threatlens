@@ -1,30 +1,43 @@
-# Node.js
+# ───────────── Node.js ─────────────
 node_modules/
+dist/
+build/
+.cache/
+.npm/
+.npmrc
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-dist/
-build/
+
+# ───────────── Environment Files ─────────────
 .env
 .env.*.local
 *.local
 
-# Editor settings
+# ───────────── IDE / Editor ─────────────
 .vscode/
 .idea/
-.DS_Store
 *.swp
 *.swo
 
-# System files
+# ───────────── System / OS ─────────────
+.DS_Store
 Thumbs.db
 
-# Optional: lockfiles (uncomment only if not using lockfiles)
+# ───────────── GitHub Pages ─────────────
+gh-pages/
+
+# ───────────── Optional Lock Files ─────────────
+# Uncomment if not using lockfiles
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
 
-# GitHub Pages cache (if using gh-pages)
-.cache/
-gh-pages/
+# ───────────── ThreatLens Data ─────────────
+# Ignore threat feed unless committed by workflow
+assets/threat-intel/threat-feed.csv
+
+# ───────────── Python ─────────────
+__pycache__/
+*.py[cod]
