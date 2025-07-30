@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { IOC, Source } from "@/Entities/all";
+import { IOC, Source } from "@/entities/all";
 import { format, subDays, startOfDay, endOfDay } from "date-fns";
 import {
   Shield,
@@ -12,11 +12,11 @@ import {
   Download
 } from "lucide-react";
 
-import StatsOverview from "../Components/dashboard/StatsOverview";
-import ThreatTimeline from "../Components/dashboard/ThreatTimeLine.tsx";
-import RecentIOCs from "../Components/dashboard/RecentIOCs";
-import TopSources from "../Components/dashboard/TopSources";
-import ThreatTypeChart from "../Components/dashboard/ThreatTypeChart";
+import StatsOverview from "../components/dashboard/StatsOverview";
+import ThreatTimeline from "../components/dashboard/ThreatTimeline";
+import RecentIOCs from "../components/dashboard/RecentIOCs";
+import TopSources from "../components/dashboard/TopSources";
+import ThreatTypeChart from "../components/dashboard/ThreatTypeChart";
 
 export default function Dashboard() {
   const [iocs, setIocs] = useState([]);

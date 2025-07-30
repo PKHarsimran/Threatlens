@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
-import { Badge } from "@/Components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Globe, TrendingUp } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
