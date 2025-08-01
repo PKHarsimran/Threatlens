@@ -7,11 +7,12 @@ export interface IOCRecord {
   source_name: string;
   source_url: string;
   source_type: string;
+  created_date: string;
   timestamp: string;
 }
 
 const STORAGE_KEY = 'iocs';
-const CSV_PATH = '/assets/threat-intel/threat-feed.csv';
+const CSV_PATH = `${import.meta.env.BASE_URL}assets/threat-intel/threat-feed.csv`;
 
 function parseCSV(text: string): IOCRecord[] {
   const lines = text.trim().split(/\r?\n/);
@@ -22,6 +23,9 @@ function parseCSV(text: string): IOCRecord[] {
     headers.forEach((h, i) => {
       record[h] = values[i];
     });
+    if (record.timestamp && !record.created_date) {
+      record.created_date = record.timestamp;
+    }
     return record as IOCRecord;
   });
 }
@@ -50,11 +54,12 @@ export async function list(order?: string): Promise<IOCRecord[]> {
   return data;
 }
 
-export async function create(ioc: Omit<IOCRecord, 'id' | 'timestamp'>): Promise<IOCRecord> {
+export async function create(ioc: Omit<IOCRecord, 'id' | 'timestamp' | 'created_date'>): Promise<IOCRecord> {
   const data = await getData();
   const newItem: IOCRecord = {
     id: crypto.randomUUID(),
     timestamp: new Date().toISOString(),
+    created_date: new Date().toISOString(),
     ...ioc,
   };
   data.push(newItem);
