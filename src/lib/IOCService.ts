@@ -14,15 +14,16 @@ export interface IOCRecord {
 const STORAGE_KEY = 'iocs';
 const CSV_PATH = `${import.meta.env.BASE_URL}assets/threat-intel/threat-feed.csv`;
 
-function parseCSV(text: string): IOCRecord[] {
-  const lines = text.trim().split(/\r?\n/);
-  const headers = lines.shift()?.split(',') || [];
-  return lines.map((line, idx) => {
-    const values = line.split(',');
-    const record: any = { id: crypto.randomUUID() };
-    headers.forEach((h, i) => {
-      record[h] = values[i];
-    });
+import Papa from 'papaparse';
+
+export function parseCSV(text: string): IOCRecord[] {
+  const { data } = Papa.parse<Record<string, string>>(text, {
+    header: true,
+    skipEmptyLines: true,
+  });
+
+  return data.map(row => {
+    const record: any = { id: crypto.randomUUID(), ...row };
     if (record.timestamp && !record.created_date) {
       record.created_date = record.timestamp;
     }
