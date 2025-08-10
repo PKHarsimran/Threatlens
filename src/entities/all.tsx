@@ -3,6 +3,7 @@ import * as SourceService from '../lib/SourceService';
 
 export const IOC = {
   list: IOCService.list,
+  refresh: IOCService.refresh,
   create: IOCService.create,
   update: IOCService.update,
   delete: IOCService.remove,

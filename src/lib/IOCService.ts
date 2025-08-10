@@ -12,7 +12,18 @@ export interface IOCRecord {
 }
 
 const STORAGE_KEY = 'iocs';
-const CSV_PATH = `${import.meta.env.BASE_URL}threat-intel/threat-feed.csv`;
+const META_KEY = 'iocs:lastModified';
+
+// Resolve CSV path dynamically so it works in development and production
+const CSV_PATH = (() => {
+  if (typeof window !== 'undefined') {
+    return new URL(
+      'threat-intel/threat-feed.csv',
+      `${window.location.origin}${import.meta.env.BASE_URL}`
+    ).toString();
+  }
+  return `${import.meta.env.BASE_URL}threat-intel/threat-feed.csv`;
+})();
 
 import Papa from 'papaparse';
 
@@ -31,28 +42,57 @@ export function parseCSV(text: string): IOCRecord[] {
   });
 }
 
-async function loadFromCSV(): Promise<IOCRecord[]> {
+async function loadFromCSV(): Promise<{ data: IOCRecord[]; lastModified?: string }> {
   const resp = await fetch(CSV_PATH);
   const text = await resp.text();
-  return parseCSV(text);
+  return { data: parseCSV(text), lastModified: resp.headers.get('Last-Modified') || undefined };
 }
 
-async function getData(): Promise<IOCRecord[]> {
-  const cached = localStorage.getItem(STORAGE_KEY);
-  if (cached) {
-    return JSON.parse(cached);
+async function getData(forceRefresh = false): Promise<IOCRecord[]> {
+  const cached = !forceRefresh ? localStorage.getItem(STORAGE_KEY) : null;
+  const cachedLast = localStorage.getItem(META_KEY);
+
+  if (cached && !forceRefresh) {
+    try {
+      const headResp = await fetch(CSV_PATH, { method: 'HEAD' });
+      const lastModified = headResp.headers.get('Last-Modified');
+      if (!lastModified || lastModified === cachedLast) {
+        return JSON.parse(cached);
+      }
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(META_KEY);
+    } catch {
+      return JSON.parse(cached);
+    }
   }
-  const data = await loadFromCSV();
+
+  const { data, lastModified } = await loadFromCSV();
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  if (lastModified) {
+    localStorage.setItem(META_KEY, lastModified);
+  }
+  return data;
+}
+
+function sortData(data: IOCRecord[], order?: string): IOCRecord[] {
+  if (order === '-created_date' || order === '-timestamp') {
+    return [...data].sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+  }
   return data;
 }
 
 export async function list(order?: string): Promise<IOCRecord[]> {
   const data = await getData();
-  if (order === '-created_date' || order === '-timestamp') {
-    return [...data].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-  }
-  return data;
+  return sortData(data, order);
+}
+
+export async function refresh(order?: string): Promise<IOCRecord[]> {
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(META_KEY);
+  const data = await getData(true);
+  return sortData(data, order);
 }
 
 export async function create(ioc: Omit<IOCRecord, 'id' | 'timestamp' | 'created_date'>): Promise<IOCRecord> {
