@@ -13,7 +13,7 @@ FEEDS = [
     "https://threatfox.abuse.ch/export/host/",
 ]
 
-CSV_PATH = "assets/threat-intel/threat-feed.csv"
+CSV_PATH = "public/threat-intel/threat-feed.csv"
 
 
 def determine_type(indicator: str) -> str:

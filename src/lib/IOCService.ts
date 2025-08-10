@@ -12,7 +12,7 @@ export interface IOCRecord {
 }
 
 const STORAGE_KEY = 'iocs';
-const CSV_PATH = `${import.meta.env.BASE_URL}assets/threat-intel/threat-feed.csv`;
+const CSV_PATH = '/threat-intel/threat-feed.csv';
 
 import Papa from 'papaparse';
 
