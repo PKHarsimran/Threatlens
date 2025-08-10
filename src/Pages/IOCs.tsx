@@ -22,6 +22,7 @@ export default function IOCs() {
   const [iocs, setIocs] = useState([]);
   const [filteredIocs, setFilteredIocs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [filters, setFilters] = useState({
@@ -40,13 +41,17 @@ export default function IOCs() {
     applyFilters();
   }, [iocs, searchTerm, filters]);
 
-  const loadIOCs = async () => {
+  const loadIOCs = async (refresh = false) => {
     setIsLoading(true);
+    setError(null);
     try {
-      const data = await IOC.list("-created_date");
+      const data = refresh
+        ? await IOC.refresh("-created_date")
+        : await IOC.list("-created_date");
       setIocs(data);
     } catch (error) {
       console.error("Error loading IOCs:", error);
+      setError("Failed to load IOCs. Please try again.");
     }
     setIsLoading(false);
   };
@@ -149,6 +154,19 @@ export default function IOCs() {
 
         {/* Stats */}
         <IOCStats iocs={iocs} filteredIocs={filteredIocs} />
+
+        {/* Error Banner */}
+        {error && (
+          <div className="bg-red-500/20 border border-red-500 text-red-200 p-4 rounded">
+            <p>{error}</p>
+            <Button
+              onClick={() => loadIOCs(true)}
+              className="mt-2 bg-red-600 hover:bg-red-700 text-white"
+            >
+              Retry
+            </Button>
+          </div>
+        )}
 
         {/* Search and Filters */}
         <div className="flex flex-col lg:flex-row gap-4">
